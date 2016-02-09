@@ -39,8 +39,8 @@ module.exports = class BlockchainService {
 		});
 	}
 
-	makeTransaction(walletCredentials, xPubReceiveAddress, amount) {
-		const amountInSatoshi = BitcoinUtils.btcToSatoshi(amount);
+	makeTransaction(walletCredentials, xPubReceiveAddress, amountInBtc) {
+		const amountInSatoshi = BitcoinUtils.btcToSatoshi(amountInBtc);
 		const receiver = new blockchain.Receive(xPubReceiveAddress, this.config.callbackUrl, this.config.receiveApiCode);
 		
 		receiver.generate()
