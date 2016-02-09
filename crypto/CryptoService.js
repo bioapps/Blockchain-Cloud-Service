@@ -25,19 +25,19 @@ module.exports = class Crypt {
 		return this.privateKey.decrypt(hash, 'utf8');
 	}
 
-	getWalletCredentials(hash, salt) {
+	decryptWalletCredentials(credentialsHash, tagId/*, pinCode*/) {
 		return new Promise((resolve, reject) => {
-			let decrypted = this.decrypt(hash);
+			let decrypted = this.decrypt(credentialsHash);
 
 			// Validate
-			if (!this.isValid(decrypted, salt)) {
+			if (!this.isValid(decrypted, tagId)) {
 				return reject({
 					errorType: 'crypto-error',
 					errorMessage: 'Crypted text does not contain a valid salt'
 				});
 			}
 
-			decrypted = this.removeSalt(decrypted, salt);
+			decrypted = this.removeSalt(decrypted, tagId);
 			let firstComma = decrypted.indexOf(',');
 
 			let credentials = {
@@ -47,6 +47,10 @@ module.exports = class Crypt {
 
 			resolve(credentials);
 		});
+	}
+
+	encryptWalletCredentials(credentials, tagId/*, pinCode*/) {
+		
 	}
 
 	addSalt(text, salt) {
