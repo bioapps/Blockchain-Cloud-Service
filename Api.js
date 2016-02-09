@@ -9,11 +9,11 @@ const baseConfig = {
 };
 
 module.exports = class Api {
-	constructor(config, blockchainService, bitcoinsCrypto) {
-		this.config = Object.assign({}, baseConfig, config);
-
+	constructor(blockchainService, bitcoinsCrypto, config) {
 		this.blockchainService = blockchainService;
 		this.bitcoinsCrypto = bitcoinsCrypto;
+
+		this.config = Object.assign({}, baseConfig, config);
 
 		this.app = express();
 		this.setupApi();
