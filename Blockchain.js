@@ -4,12 +4,11 @@ require('colors');
 
 const blockchain = require('blockchain.info');
 const ConfirmationServer = require('./ConfirmationServer');
-const Utils = require('./bitcoin-utils');
+const BitcoinUtils = require('./utils/BitcoinUtils');
 
 const ErrorMessages = require('./error-messages');
 
 const baseConfig = {
-	receiveAddress: '',
 	apiCode: null,
 	callbackUrl: null,
 	serverPort: 8002
@@ -51,13 +50,13 @@ module.exports = class Blockchain {
 		});
 	}
 
-	makeWalletTransaction(tsx) {
-		let walletCredentials = tsx.wallet;
-		let receiveAddress = tsx.receiveAddress;
-		let amount = tsx.amount;
+	makeWalletTransaction(transation) {
+		let walletCredentials = transation.wallet;
+		let receiveAddress = transation.receiveAddress;
+		let amount = transation.amount;
 
 		let wallet = new blockchain.MyWallet(walletCredentials.username, walletCredentials.password, walletCredentials.password2);
-		let satoshi = Math.round(Utils.btcToSatoshi(amount));
+		let satoshi = Math.round(BitcoinUtils.btcToSatoshi(amount));
 
 		return this.createReceiveAddress(receiveAddress)
 					.then(address => this.makePayment(wallet, address, satoshi));
