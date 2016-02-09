@@ -1,17 +1,22 @@
 'use strict';
 
+
 const spawn = require('cross-spawn-async');
 const blockchain = require('blockchain.info');
+
+//
+// Empty wallet
+// Used to log out other wallets
+//
+const defaultWallet = {
+	identifier: '7a49feee-3820-4b28-858f-6c9ec21844e0',
+	password: 'LogOutWallet123!'
+};
 
 
 const baseConfig = {
 	apiCode: null,
 	servicePort: 3000
-};
-
-const defaultWallet = {
-	identifier: '7a49feee-3820-4b28-858f-6c9ec21844e0',
-	password: 'LogOutWallet123!'
 };
 
 //
@@ -25,7 +30,7 @@ class LocalWalletService {
 	}
 
 	startLocalBlockchainWalletService() {		
-		this.blockchainWalletServiceProcess = spawn('blockchain-wallet-service', ['start', `--port ${this.config.servicePort}`]);
+		this.blockchainWalletServiceProcess = spawn('blockchain-wallet-service', ['start', '--port', this.config.servicePort]);
 	}
 
 	//
