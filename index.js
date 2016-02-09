@@ -1,7 +1,6 @@
 'use strict';
 
 const Server = require('./Server');
-const LocalWalletService = require('./LocalWalletService');
 
 const server = new Server({
 	port: process.env.PORT,
@@ -10,13 +9,10 @@ const server = new Server({
 		privateKey: process.env.CRYPT_PRIVATE_KEY
 	},
 	blockchain: {
-		callbackUrl: process.env.CALLBACK_URL
+		callbackUrl: process.env.CALLBACK_URL,
+		receiveApiCode: process.env.RECEIVE_API_CODE,
+		walletApiCode: process.env.WALLET_API_CODE
 	}
 });
-
-new LocalWalletService({
-	apiCode: process.env.WALLET_API_CODE
-});
-
 
 server.start();

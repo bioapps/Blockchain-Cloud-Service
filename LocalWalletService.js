@@ -37,7 +37,7 @@ class LocalWalletService {
 	// Unencrypted payment
 	// Goes directly to payment service, credentials are cleartext
 	//
-	makePayment(credentials, amountInSatoshi, receiveAddress) {
+	makePayment(credentials, receiveAddress, amountInSatoshi) {
 
 		return this.loginWallet(credentials)
 			.then(wallet => {
