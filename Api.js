@@ -4,7 +4,6 @@ require('colors');
 
 const express = require('express');
 
-
 const baseConfig = {
 	port: 9001
 };
@@ -28,6 +27,7 @@ module.exports = class Api {
 
 		app.get('/transaction', this.transaction.bind(this));
 		app.get('/confirmation', this.confirmation.bind(this));
+		app.get('/cryptkey', this.cryptkey.bind(this));
 	}
 
 
@@ -60,5 +60,10 @@ module.exports = class Api {
 
 	confirmation(req, res) {
 		res.status(200).end('*ok*');
+	}
+
+	cryptkey(req, res) {
+		res.set('Content-Type', 'text/plain');
+		res.end(this.bitcoinsCrypto.publicKey);
 	}
 };

@@ -3,7 +3,7 @@
 require('colors');
 
 const blockchain = require('blockchain.info');
-const BitcoinUtils = require('./utils/BitcoinUtils');
+const BitcoinUtils = require('biopay-bitcoins-lib').BitcoinUtils;
 const LocalWalletService = require('./LocalWalletService');
 
 const baseConfig = {
