@@ -10,12 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "local-wallet-service": "git+https://github.com/bioapps/Local-Wallet-Service.git",
     "biopay-bitcoins-lib": "git+https://github.com/bioapps/Biopay-Bitcoins-Lib.git",
-    "blockchain-wallet-service": "^0.14.1",
     "blockchain.info": "^1.3.1",
     "colors": "^1.1.2",
-    "cross-spawn-async": "^2.1.8",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "local-wallet-service": "git+https://github.com/bioapps/Local-Wallet-Service.git"
   }
 }
