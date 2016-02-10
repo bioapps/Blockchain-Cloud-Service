@@ -3,6 +3,7 @@
 require('colors');
 
 const express = require('express');
+var apiProxy = require('http-proxy').createProxyServer();
 
 const baseConfig = {
 	confirmationEndpoint: '',
@@ -30,6 +31,17 @@ module.exports = class Api {
 		app.get('/transaction', this.transaction.bind(this));
 		app.get('/publickey', this.publickey.bind(this));
 		app.get('/encryptcredentials', this.encryptcredentials.bind(this));
+
+		app.get('/proxy/*', (req, res) => {
+			const queryStr = Object.keys(req.query).map(key => `${key}${req.query[key] ? '=' + req.query[key] : ''}`).join('&');
+			const target = `http://127.0.0.1:3000/${req.params[0]}${queryStr ? '?' + queryStr : ''}`;
+			console.log(target);
+
+			apiProxy.web(req, res, {
+				target,
+				ignorePath: true
+			}, function(error) { console.error(error); });
+		});
 	}
 
 
