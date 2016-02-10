@@ -54,8 +54,8 @@ module.exports = class Api {
 			return;
 		}
 
-		this.bitcoinsCrypto.decryptWalletCredentials(credentialsHash, tagId, pinCode)
-			.then(walletCredentials => this.blockchainService.makeTransaction(walletCredentials, receiveAddress, amountInBtc))
+		const walletCredentials = this.bitcoinsCrypto.decryptWalletCredentials(credentialsHash, tagId, pinCode);
+		this.blockchainService.makeTransaction(walletCredentials, receiveAddress, amountInBtc)
 			.then(result => res.json(result))
 			.catch(error => {
 				console.error('Payment error', error);
