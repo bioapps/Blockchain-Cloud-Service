@@ -5,6 +5,7 @@ require('colors');
 const express = require('express');
 
 const baseConfig = {
+	confirmationEndpoint: '',
 	port: 9001
 };
 
@@ -25,15 +26,12 @@ module.exports = class Api {
 	setupApi() {
 		const app = this.app;
 
+		app.get(this.config.confirmationEndpoint, this.confirmation.bind(this));
 		app.get('/transaction', this.transaction.bind(this));
-		app.get('/confirmation', this.confirmation.bind(this));
 		app.get('/publickey', this.publickey.bind(this));
+		app.get('/encryptcredentials', this.encryptcredentials.bind(this));
 	}
 
-
-	//
-	// API
-	//
 
 	/**
 	 * @api {get} /transaction Makes a transaction to an address using wallet credentials
@@ -98,6 +96,24 @@ module.exports = class Api {
 		res.json({
 			format,
 			key
+		});
+		res.end();
+	}
+
+
+	encryptcredentials(req, res) {
+		const identifier = req.query.identifier;
+		const password = req.query.password;
+		const tagId = req.query.tagId;
+
+		if (!identifier || !password || !tagId) {
+			res.status(400).end('Insufficient parameters');
+			return;
+		}
+
+		const encryptedCredentials = this.bitcoinsCrypto.encryptWalletCredentials({ identifier, password }, tagId);
+		res.json({
+			encryptedCredentials
 		});
 		res.end();
 	}

@@ -8,6 +8,7 @@ const LocalWalletService = require('local-wallet-service');
 
 const baseConfig = {
 	callbackUrl: null,
+	confirmationEndpoint: '',
 	receiveApiCode: null,
 	walletApiCode: null
 };
@@ -41,9 +42,9 @@ module.exports = class BlockchainService {
 
 	makeTransaction(walletCredentials, xPubReceiveAddress, amountInBtc) {
 		const amountInSatoshi = BitcoinUtils.btcToSatoshi(amountInBtc);
-		const receiver = new blockchain.Receive(xPubReceiveAddress, this.config.callbackUrl, this.config.receiveApiCode);
+		const receiver = new blockchain.Receive(xPubReceiveAddress, this.config.callbackUrl + this.config.confirmationEndpoint, this.config.receiveApiCode);
 		
-		receiver.generate()
+		return receiver.generate()
 			.then(addressResponse => {
 				const generatedAddress = addressResponse.address;
 				return this.walletService.makePayment(walletCredentials, generatedAddress, amountInSatoshi);
