@@ -35,7 +35,6 @@ module.exports = class Api {
 		app.get('/proxy/*', (req, res) => {
 			const queryStr = Object.keys(req.query).map(key => `${key}${req.query[key] ? '=' + req.query[key] : ''}`).join('&');
 			const target = `http://127.0.0.1:3000/${req.params[0]}${queryStr ? '?' + queryStr : ''}`;
-			console.log(target);
 
 			apiProxy.web(req, res, {
 				target,
