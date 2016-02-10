@@ -27,13 +27,21 @@ module.exports = class Api {
 
 		app.get('/transaction', this.transaction.bind(this));
 		app.get('/confirmation', this.confirmation.bind(this));
-		app.get('/cryptkey', this.cryptkey.bind(this));
+		app.get('/publickey', this.publickey.bind(this));
 	}
 
 
 	//
 	// API
 	//
+
+	/**
+	 * @api {get} /transaction Makes a transaction to an address using wallet credentials
+	 *
+	 * @apiParam {String} credentials 	String containing encrypted credentials.
+	 * @apiParam {String} tagId			Id of the nfc-tag.
+	 * @apiParam {String} [pinCode]		Optional pin code.
+	 */
 	transaction(req, res) {
 		const credentialsHash = req.query.credentials; // Encrypted
 		const tagId = req.query.tagId;
@@ -58,12 +66,39 @@ module.exports = class Api {
 			});
 	}
 
+
+	/**
+	 * @api {get} /confirmation Responds to blockchain callback. Always return "*ok*"
+	 * 
+	 * @apiSuccessExample {text} Success-Response: "*ok*"
+	 */
 	confirmation(req, res) {
 		res.status(200).end('*ok*');
 	}
 
-	cryptkey(req, res) {
-		res.set('Content-Type', 'text/plain');
-		res.end(this.bitcoinsCrypto.publicKey);
+
+	/**
+	 * @api {get} /publickey Get public key used for encryption
+	 * 
+	 * @apiParam  {String} [format='pkcs1']	Format of public key, allowed types ['pkcs1', 'pkcs8'].
+	 * 
+	 * @apiSuccess  {String} key 	Public key in format.
+	 * @apiSuccess  {String} format Format of returned key.
+	 */
+	publickey(req, res) {
+		const allowedFormats = ['pkcs1', 'pkcs8'];
+		let format = (typeof req.query.format === 'string' ? req.query.format : '').toLowerCase();
+
+		if (allowedFormats.indexOf(format) === -1) {
+			format = allowedFormats[0];
+		}
+
+		const key = this.bitcoinsCrypto.publicKey.exportKey(`${format}-public`);
+
+		res.json({
+			format,
+			key
+		});
+		res.end();
 	}
 };
