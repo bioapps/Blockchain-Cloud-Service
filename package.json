@@ -15,6 +15,7 @@
     "blockchain.info": "^2.2.0",
     "colors": "^1.1.2",
     "express": "^4.13.3",
-    "http-proxy": "^1.13.1"
+    "http-proxy": "^1.13.1",
+    "local-wallet-service": "git+https://github.com/bioapps/Local-Wallet-Service.git"
   }
 }
