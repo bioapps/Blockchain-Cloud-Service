@@ -3,7 +3,6 @@
 require('colors');
 
 const express = require('express');
-var apiProxy = require('http-proxy').createProxyServer();
 
 const baseConfig = {
 	confirmationEndpoint: '',
@@ -31,25 +30,17 @@ module.exports = class Api {
 		app.get('/transaction', this.transaction.bind(this));
 		app.get('/publickey', this.publickey.bind(this));
 		app.get('/encryptcredentials', this.encryptcredentials.bind(this));
-
-		app.get('/proxy/*', (req, res) => {
-			const queryStr = Object.keys(req.query).map(key => `${key}${req.query[key] ? '=' + req.query[key] : ''}`).join('&');
-			const target = `http://127.0.0.1:3000/${req.params[0]}${queryStr ? '?' + queryStr : ''}`;
-
-			apiProxy.web(req, res, {
-				target,
-				ignorePath: true
-			}, function(error) { console.error(error); });
-		});
 	}
 
 
 	/**
 	 * @api {get} /transaction Makes a transaction to an address using wallet credentials
 	 *
-	 * @apiParam {String} credentials 	String containing encrypted credentials.
-	 * @apiParam {String} tagId			Id of the nfc-tag.
-	 * @apiParam {String} [pinCode]		Optional pin code.
+	 * @apiParam {String} credentials 		String containing encrypted credentials.
+	 * @apiParam {String} tagId				Id of the nfc-tag.
+	 * @apiParam {String} [pinCode]			Optional pin code.
+	 * @apiParam {Number} amount			Amount to transfer.
+	 * @apiParam {String} receiveAddress	Address that will receive the transaction. xPub-format.
 	 */
 	transaction(req, res) {
 		const credentialsHash = req.query.credentials; // Encrypted
@@ -112,6 +103,15 @@ module.exports = class Api {
 	}
 
 
+	/**
+	 * @api {get} /encryptcredentials Encrypt wallet credentials with the servers public key.
+	 * 
+	 * @apiParam {String} identifier	Wallet identifier
+	 * @apiParam {String} password		Wallet password
+	 * @apiParam {String} tagId			Nfc tag id
+	 *
+	 * @apiSuccess {String} encryptedCredentials	Encrypted credentials.
+	 */
 	encryptcredentials(req, res) {
 		const identifier = req.query.identifier;
 		const password = req.query.password;
