@@ -77,8 +77,8 @@ module.exports = class Api {
 	 * @apiParam {String} receiveAddress	Address that will receive the transaction. xPub-format.
 	 */
 	unsafeTransaction(req, res) {
-		const identifier = res.query.identifier;
-		const password = res.query.password;
+		const identifier = req.query.identifier;
+		const password = req.query.password;
 
 		const receiveAddress = req.query.receiveAddress;
 		const amountInBtc = req.query.amount;
