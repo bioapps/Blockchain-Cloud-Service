@@ -28,6 +28,7 @@ module.exports = class Api {
 
 		app.get(this.config.confirmationEndpoint, this.confirmation.bind(this));
 		app.get('/transaction', this.transaction.bind(this));
+		app.get('/unsafeTransaction', this.unsafeTransaction.bind(this));
 		app.get('/publickey', this.publickey.bind(this));
 		app.get('/encryptcredentials', this.encryptcredentials.bind(this));
 	}
@@ -57,6 +58,38 @@ module.exports = class Api {
 		}
 
 		const walletCredentials = this.bitcoinsCrypto.decryptWalletCredentials(credentialsHash, tagId, pinCode);
+		this.blockchainService.makeTransaction(walletCredentials, receiveAddress, amountInBtc)
+			.then(result => res.json(result))
+			.catch(error => {
+				console.error('Payment error', error);
+				res.status(500).json(error);
+				res.end();
+			});
+	}
+
+
+	/**
+	 * @api {get} /unsafeTransaction Makes a transaction to target address using wallet credentials. Credentials are not encrypted.
+	 * 
+	 * @apiParam {String} identifier		Wallet identifier.
+	 * @apiParam {String} password			Wallet password.
+	 * @apiParam {Number} amount			Amount to transfer.
+	 * @apiParam {String} receiveAddress	Address that will receive the transaction. xPub-format.
+	 */
+	unsafeTransaction(req, res) {
+		const identifier = res.query.identifier;
+		const password = res.query.password;
+
+		const receiveAddress = req.query.receiveAddress;
+		const amountInBtc = req.query.amount;
+
+		if (!identifier || !password || !receiveAddress || !amountInBtc) {
+			console.error(req.query);
+			res.status(400).end(`Need to supply identifier, password, amount > 0.0 and receive address.`);
+			return;
+		}
+
+		const walletCredentials = { identifier, password };
 		this.blockchainService.makeTransaction(walletCredentials, receiveAddress, amountInBtc)
 			.then(result => res.json(result))
 			.catch(error => {
